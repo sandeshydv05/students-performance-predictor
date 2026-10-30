@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block breadcrumb %}OVERVIEW{% endblock %}
+{% block content %}
+<div class="page-heading heading-row">
+  <div><div class="eyebrow">YOUR STUDENT SNAPSHOT</div><h1>Good morning, educator <span class="wave">✦</span></h1><p>A grounded overview of student predictions and progress.</p></div>
+  <a class="btn btn-primary" href="{{ url_for('predict') }}"><span class="btn-plus">＋</span> New prediction</a>
+</div>
+<section class="metric-grid">
+  <article class="metric-card"><div class="metric-top"><span>Total students</span><span class="metric-icon blue">♙</span></div><div class="metric-value">{{ total }}</div><div class="metric-foot"><span class="metric-foot-dot"></span> Student predictions saved</div></article>
+  <article class="metric-card"><div class="metric-top"><span>Average predicted mark</span><span class="metric-icon purple">◉</span></div><div class="metric-value">{{ average }}<small>/100</small></div><div class="metric-foot">Across all student predictions</div></article>
+  <article class="metric-card"><div class="metric-top"><span>High achievers</span><span class="metric-icon green">↗</span></div><div class="metric-value">{{ distribution["Excellent"] }}</div><div class="metric-foot">Predicted in the excellent range</div></article>
+</section>
+<section class="dashboard-grid">
+  <article class="panel chart-panel">
+    <div class="panel-heading"><div><h2>Performance distribution</h2><p>Predicted student outcomes by category</p></div><span class="period-tag">ALL RECORDS</span></div>
+    <div class="chart-container"><canvas id="performanceChart" aria-label="Performance distribution chart"></canvas></div>
+    <div class="chart-legend"><span><i class="legend-dot dot-excellent"></i>Excellent</span><span><i class="legend-dot dot-good"></i>Good</span><span><i class="legend-dot dot-average"></i>Average</span><span><i class="legend-dot dot-support"></i>Needs improvement</span></div>
+    <script id="distribution-data" type="application/json">{{ distribution|tojson }}</script>
+  </article>
+  <article class="panel insight-panel">
+    <div class="insight-mark">✦</div><div class="eyebrow">MODEL SNAPSHOT</div><h2>Useful estimates.<br>Human-first decisions.</h2>
+    <p>Predictions are generated from student learning indicators and should be used as a starting point for supportive conversations.</p>
+    <div class="model-name"><span class="status-dot"></span><span><small>ACTIVE MODEL</small><b>{{ model_name }}</b></span></div>
+    {% if model_metrics.get(model_name) %}
+    <div class="model-metrics"><span>Test MAE <b>{{ model_metrics[model_name].mae }}</b></span><span>RMSE <b>{{ model_metrics[model_name].rmse }}</b></span><span>R² <b>{{ model_metrics[model_name].r2 }}</b></span></div>
+    {% endif %}
+    <img class="model-comparison-image" src="{{ url_for('static', filename='images/model_comparison.png') }}" alt="Comparison of held-out MAE and RMSE for the candidate models">
+    <a class="text-link" href="{{ url_for('predict') }}">Create a prediction <span>→</span></a>
+  </article>
+</section>
+<section class="panel trend-panel">
+  <div class="panel-heading"><div><h2>Prediction trend</h2><p>Predicted marks across the latest student records</p></div><span class="period-tag">LATEST 10</span></div>
+  <div class="trend-chart-container"><canvas id="trendChart" aria-label="Recent predicted marks trend"></canvas></div>
+  <script id="trend-data" type="application/json">{{ {"labels": trend|map(attribute="student_name")|list, "marks": trend|map(attribute="predicted_marks")|list}|tojson }}</script>
+</section>
+<section class="panel recent-panel">
+  <div class="panel-heading"><div><h2>Recent predictions</h2><p>Your latest student performance estimates</p></div><a class="text-link" href="{{ url_for('students') }}">View all records <span>→</span></a></div>
+  {% if recent %}
+  <div class="table-responsive"><table class="table app-table"><thead><tr><th>STUDENT</th><th>PREDICTED MARK</th><th>PERFORMANCE</th><th>DATE</th><th></th></tr></thead><tbody>
+  {% for student in recent %}
+  <tr><td><a class="student-cell" href="{{ url_for('results', record_id=student.id) }}"><span class="table-avatar">{{ student.student_name[:1]|upper }}</span><span><b>{{ student.student_name }}</b><small>ID #{{ student.id }}</small></span></a></td><td><b>{{ "%.1f"|format(student.predicted_marks) }}<span class="out-of"> / 100</span></b></td><td><span class="category-pill category-{{ student.category|lower|replace(' ', '-') }}">{{ student.category }}</span></td><td>{{ student.created_at[:10] }}</td><td><a class="row-arrow" href="{{ url_for('results', record_id=student.id) }}" aria-label="View {{ student.student_name }}">↗</a></td></tr>
+  {% endfor %}
+  </tbody></table></div>
+  {% else %}
+  <div class="empty-state"><span class="empty-icon">◫</span><h3>Your student snapshot starts here</h3><p>Create your first prediction to see student insights and trends.</p><a class="btn btn-primary" href="{{ url_for('predict') }}">Create first prediction</a></div>
+  {% endif %}
+</section>
+<div class="dashboard-footer">Predictions are estimates to support educator judgment, not a measure of a student's full potential.</div>
+{% endblock %}

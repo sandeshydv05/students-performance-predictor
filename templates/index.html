@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block breadcrumb %}WELCOME{% endblock %}
+{% block content %}
+<section class="welcome-layout">
+  <div class="welcome-copy">
+    <div class="eyebrow"><span class="eyebrow-line"></span> A clearer path to progress</div>
+    <h1>Make every student's<br><span>potential visible.</span></h1>
+    <p class="welcome-lede">An evidence-informed workspace to estimate academic outcomes, understand the factors behind them, and turn insights into meaningful next steps.</p>
+    <div class="welcome-actions">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}">Explore dashboard <span>→</span></a>
+      <a class="btn btn-soft btn-lg" href="{{ url_for('predict') }}">Start a prediction</a>
+    </div>
+    <div class="welcome-proof"><span class="proof-icon">✦</span> Predictions support guidance—not define a student's potential.</div>
+  </div>
+  <div class="welcome-visual">
+    <div class="visual-glow"></div>
+    <div class="visual-card visual-card-main">
+      <div class="visual-top"><span class="tiny-label">LEARNING MOMENTUM</span><span class="trend-pill">↗ +12.8%</span></div>
+      <div class="visual-score">82<span>/100</span></div>
+      <div class="visual-subtitle">A promising outlook</div>
+      <div class="mini-chart"><i style="height:34%"></i><i style="height:46%"></i><i style="height:41%"></i><i style="height:62%"></i><i style="height:56%"></i><i style="height:78%"></i><i style="height:70%"></i><i style="height:93%"></i></div>
+      <div class="chart-foot"><span>WEEK 01</span><span>WEEK 08</span></div>
+    </div>
+    <div class="floating-note note-top"><span class="note-icon lavender">✦</span><span><b>Balanced routine</b><small>Strongest predictor today</small></span></div>
+    <div class="floating-note note-bottom"><span class="note-icon mint">✓</span><span><b>Personalized guidance</b><small>Small steps, steady growth</small></span></div>
+    <div class="visual-orbit orbit-one"></div><div class="visual-orbit orbit-two"></div>
+  </div>
+</section>
+<section class="welcome-lower">
+  <span>BUILT FOR BETTER CONVERSATIONS</span>
+  <div><b>01</b> Estimate with context</div><div><b>02</b> Understand the signals</div><div><b>03</b> Support the next step</div>
+</section>
+{% endblock %}

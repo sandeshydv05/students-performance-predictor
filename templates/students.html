@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Student records{% endblock %}
+{% block breadcrumb %}STUDENT RECORDS{% endblock %}
+{% block content %}
+<div class="page-heading heading-row"><div><div class="eyebrow">STUDENT MANAGEMENT</div><h1>Student records</h1><p>Review, update, and manage saved prediction records.</p></div><a class="btn btn-primary" href="{{ url_for('predict') }}"><span class="btn-plus">＋</span> New prediction</a></div>
+<section class="panel records-panel">
+  <form class="records-toolbar" method="get" action="{{ url_for('students') }}"><div><h2>All students <span class="count-badge">{{ students|length }}</span></h2><p>Prediction history and student details</p></div><div class="search-wrap"><span>⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Search students…" aria-label="Search students"><button type="submit">Search</button></div></form>
+  {% if students %}
+  <div class="table-responsive"><table class="table app-table records-table"><thead><tr><th>STUDENT</th><th>STUDY HRS</th><th>ATTENDANCE</th><th>PREVIOUS</th><th>PREDICTED</th><th>CATEGORY</th><th>DATE</th><th>ACTIONS</th></tr></thead><tbody>
+  {% for student in students %}
+  <tr><td><a class="student-cell" href="{{ url_for('results', record_id=student.id) }}"><span class="table-avatar">{{ student.student_name[:1]|upper }}</span><span><b>{{ student.student_name }}</b><small>ID #{{ student.id }}</small></span></a></td><td>{{ student.study_hours }}</td><td>{{ student.attendance }}%</td><td>{{ student.previous_marks }}</td><td><b>{{ "%.1f"|format(student.predicted_marks) }}</b></td><td><span class="category-pill category-{{ student.category|lower|replace(' ', '-') }}">{{ student.category }}</span></td><td>{{ student.created_at[:10] }}</td><td><div class="action-group"><a href="{{ url_for('results', record_id=student.id) }}" class="action-link" title="View record" aria-label="View record">↗</a><a href="{{ url_for('edit_student', record_id=student.id) }}" class="action-link" title="Edit record" aria-label="Edit record">✎</a><form method="post" action="{{ url_for('delete_student', record_id=student.id) }}" data-confirm="Delete this student record? This cannot be undone."><button class="action-link delete-link" type="submit" title="Delete record" aria-label="Delete record">×</button></form></div></td></tr>
+  {% endfor %}
+  </tbody></table></div>
+  {% else %}
+  <div class="empty-state"><span class="empty-icon">▤</span><h3>{{ "No matching students found" if search else "No student records yet" }}</h3><p>{{ "Try a different search term." if search else "Create a prediction to start building your student history." }}</p>{% if not search %}<a class="btn btn-primary" href="{{ url_for('predict') }}">Create first prediction</a>{% endif %}</div>
+  {% endif %}
+</section>
+{% endblock %}

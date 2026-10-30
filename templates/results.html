@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Prediction result{% endblock %}
+{% block breadcrumb %}STUDENT RESULT{% endblock %}
+{% block content %}
+<div class="page-heading heading-row">
+  <div><div class="eyebrow">PREDICTION COMPLETE · STUDENT #{{ student.id }}</div><h1>Here's the learning outlook</h1><p>A helpful estimate to guide your next conversation with {{ student.student_name }}.</p></div>
+  <div class="heading-actions"><a class="btn btn-soft" href="{{ url_for('edit_student', record_id=student.id) }}">Edit record</a><a class="btn btn-primary" href="{{ url_for('predict') }}">＋ New prediction</a></div>
+</div>
+<section class="result-grid">
+  <article class="panel result-score-panel"><div class="score-orb"><div><b>{{ "%.1f"|format(student.predicted_marks) }}</b><span>OUT OF 100</span></div></div><div class="eyebrow">PREDICTED EXAM MARK</div><h2>{{ student.student_name }}</h2><span class="category-pill category-{{ student.category|lower|replace(' ', '-') }}">{{ student.category }}</span><p class="result-disclaimer">Model estimate based on the learning indicators provided. Use alongside educator judgment.</p></article>
+  <article class="panel factors-panel"><div class="panel-heading"><div><h2>Learning indicators</h2><p>Details used for this estimate</p></div><span class="factor-icon">▦</span></div><div class="factor-list">
+  <div><span>Study hours / day</span><b>{{ student.study_hours }} hrs</b></div><div><span>Attendance</span><b>{{ student.attendance }}%</b></div><div><span>Previous exam marks</span><b>{{ student.previous_marks }}/100</b></div><div><span>Assignment marks</span><b>{{ student.assignment_marks }}/100</b></div><div><span>Sleep per night</span><b>{{ student.sleep_hours }} hrs</b></div><div><span>Parental education</span><b>{{ student.parental_education }}</b></div><div><span>Internet access</span><b>{{ student.internet_access }}</b></div><div><span>Extracurriculars</span><b>{{ student.extracurricular }}</b></div>
+  </div></article>
+</section>
+<section class="panel suggestions-panel"><div class="suggestion-heading"><span class="suggestion-spark">✦</span><div><div class="eyebrow">A FEW IDEAS TO CONSIDER</div><h2>Turn this insight into a next step</h2><p>Small, practical actions can make progress feel achievable.</p></div></div><div class="suggestion-list">{% for suggestion in suggestions %}<div class="suggestion-item"><span>✓</span><p>{{ suggestion }}</p></div>{% endfor %}</div><div class="result-bottom"><span>Created {{ student.created_at[:10] }}</span><a class="text-link" href="{{ url_for('students') }}">Go to student records <span>→</span></a></div></section>
+{% endblock %}
